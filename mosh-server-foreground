@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my @command_args = @ARGV;
+
+my $pid = fork();
+unless (defined $pid) {
+  die "failed to fork: $!";
+}
+
+if ($pid) {
+  my $loop = 1;
+  local $SIG{INT} = sub {
+    $loop = 0;
+    print STDERR "Interrupt received...\n";
+  };
+  while ($loop) {
+    sleep 1;
+
+    #my @ps = grep {m|/usr/bin/mosh-server|} qx(ps);
+    #if (@ps != 2) {
+    #  $loop = 0;
+    #}
+  }
+}
+else {
+  exec('/usr/bin/mosh-server', @command_args);
+}

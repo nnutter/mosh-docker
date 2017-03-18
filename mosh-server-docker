@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+set -o errexit
+
+docker ps -a | grep 'alpine:mosh' | awk '{print $1}' | xargs --no-run-if-empty docker rm -fv > /dev/null
+container_id=$(docker run --detach --publish 60000-60100:60000-60100/udp alpine:mosh /usr/local/bin/mosh-server-foreground "$@")
+docker logs $container_id
